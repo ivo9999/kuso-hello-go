@@ -30,6 +30,7 @@ func main() {
 	mux.HandleFunc("/secret", showSecret)
 	mux.HandleFunc("/error", returnError)
 	mux.HandleFunc("/panic", causePanic)
+	mux.HandleFunc("/preview-test", previewTest)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -134,6 +135,16 @@ func causePanic(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 	_, _ = w.Write([]byte("panic incoming\n"))
 	panic("intentional panic from kuso-hello-go /panic")
+}
+
+// /preview-test is a tiny endpoint added on a feature branch so we can
+// verify that a kuso preview env actually serves the new code, not the
+// production image. Returns "ok-from-preview-branch".
+func previewTest(w http.ResponseWriter, r *http.Request) {
+	jsonOut(w, http.StatusOK, map[string]string{
+		"status":  "ok-from-preview-branch",
+		"build":   os.Getenv("KUSO_BUILD_REF"),
+	})
 }
 
 func jsonOut(w http.ResponseWriter, status int, body any) {
