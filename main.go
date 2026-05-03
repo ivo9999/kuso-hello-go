@@ -51,6 +51,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 		"has_test_secret":     os.Getenv("TEST_SECRET") != "",
 		"has_log_level":       os.Getenv("LOG_LEVEL") != "",
 		"server_time":         time.Now().UTC().Format(time.RFC3339),
+		"mude":                "yes",
 	})
 }
 
